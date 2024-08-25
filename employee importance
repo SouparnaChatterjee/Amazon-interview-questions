@@ -1,0 +1,25 @@
+class Solution {
+private:
+    unordered_map<int, Employee*> employeeMap;
+
+    // Define the DFS function as a static member function
+    static int dfs(unordered_map<int, Employee*>& empMap, int empId) {
+        Employee* emp = empMap[empId];
+        int totalImportance = emp->importance;
+        for (int subId : emp->subordinates) {
+            totalImportance += dfs(empMap, subId);
+        }
+        return totalImportance;
+    }
+
+public:
+    int getImportance(vector<Employee*> employees, int id) {
+        // Build a map from employee ID to Employee pointer for quick access
+        for (Employee* emp : employees) {
+            employeeMap[emp->id] = emp;
+        }
+        
+        // Compute and return the total importance starting from the given employee ID
+        return dfs(employeeMap, id);
+    }
+};
