@@ -1,0 +1,48 @@
+class Solution {
+public:
+    bool isCyclic(int node, vector<vector<int>>& adj, vector<bool>& visited, int parent) {
+        visited[node] = true;
+        for (int neighbor : adj[node]) {
+            if (!visited[neighbor]) {
+                if (isCyclic(neighbor, adj, visited, node)) {
+                    return true;
+                }
+            } else if (neighbor != parent) {
+                // If the neighbor is visited and is not the parent, there is a cycle
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    bool validTree(int n, vector<vector<int>>& edges) {
+        if (edges.size() != n - 1) {
+            // A tree must have exactly n - 1 edges
+            return false;
+        }
+        
+        // Create adjacency list
+        vector<vector<int>> adj(n);
+        for (const auto& edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        
+        // Initialize visited array
+        vector<bool> visited(n, false);
+        
+        // Check for cycles and connectivity
+        if (isCyclic(0, adj, visited, -1)) {
+            return false;
+        }
+        
+        // Ensure all nodes are visited (check connectivity)
+        for (bool v : visited) {
+            if (!v) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
