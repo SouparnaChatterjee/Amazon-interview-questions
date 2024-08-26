@@ -1,0 +1,32 @@
+class Solution {
+public:
+    vector<vector<int>> memo;
+    
+    int minDistance(string word1, string word2) {
+        int m = word1.size();  // rows (length of word1)
+        int n = word2.size();  // columns (length of word2)
+        // Initialize the memo table with -1 to indicate uncomputed states.
+        memo.resize(m + 1, vector<int>(n + 1, -1));
+        return dp(m, n, word1, word2);
+    }
+    
+    int dp(int m, int n, const string& word1, const string& word2) {
+        // Base cases
+        if (m == 0) return n;  // Insert all remaining characters of word2
+        if (n == 0) return m;  // Delete all remaining characters of word1
+        
+        // Check if this subproblem has already been solved
+        if (memo[m][n] != -1) return memo[m][n];
+        
+        // If characters are the same, no change is needed, move to the next pair
+        if (word1[m - 1] == word2[n - 1]) {
+            return memo[m][n] = dp(m - 1, n - 1, word1, word2);
+        } else {
+            // Calculate the minimum cost between inserting, deleting, or replacing
+            int insert = dp(m, n - 1, word1, word2);    // Insert
+            int del = dp(m - 1, n, word1, word2);       // Delete
+            int replace = dp(m - 1, n - 1, word1, word2); // Replace
+            return memo[m][n] = 1 + min({insert, del, replace});
+        }
+    }
+};
