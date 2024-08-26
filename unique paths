@@ -1,0 +1,30 @@
+public:
+    vector<vector<int>> memo;
+
+    int dfs(int i, int j, vector<vector<int>>& obstacleGrid) {
+        // Base cases
+        if (i <= 0 || j <= 0 || obstacleGrid[i-1][j-1] == 1) return 0; // Out of bounds or obstacle
+        if (i == 1 && j == 1) return 1; // Starting point
+
+        // If already computed, return memoized value
+        if (memo[i][j] != -1) return memo[i][j];
+
+        // Compute the number of paths from the top and left cells
+        memo[i][j] = dfs(i - 1, j, obstacleGrid) + dfs(i, j - 1, obstacleGrid);
+        return memo[i][j];
+    }
+
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size();
+        int n = obstacleGrid[0].size();
+
+        // Resize memoization table with extra row and column
+        memo.resize(m + 1, vector<int>(n + 1, -1));
+
+        // If the starting or ending point is blocked, no path is possible
+        if (obstacleGrid[0][0] == 1 || obstacleGrid[m - 1][n - 1] == 1) return 0;
+
+        // Call DFS from the bottom-right corner and return the result
+        return dfs(m, n, obstacleGrid);
+    }
+};
